@@ -18,7 +18,19 @@ public class HolidayService {
         RestTemplate restTemplate = new RestTemplate();
         List<Map<String, Object>> holidays = restTemplate.getForObject(url, List.class);
 
-        LocalDate today = LocalDate.now();
+        return buildNextHolidayResponse(holidays, LocalDate.now(), year);
+    }
+
+    HolidayResponse buildNextHolidayResponse(List<Map<String, Object>> holidays, LocalDate today, int year) {
+        if (holidays == null || holidays.isEmpty()) {
+            return new HolidayResponse(
+                    "FR",
+                    year,
+                    "Aucun jour férié trouvé",
+                    "",
+                    -1
+            );
+        }
 
         for (Map<String, Object> holiday : holidays) {
             LocalDate holidayDate = LocalDate.parse((String) holiday.get("date"));
